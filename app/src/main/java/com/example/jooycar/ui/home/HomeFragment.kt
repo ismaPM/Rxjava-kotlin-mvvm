@@ -154,6 +154,7 @@ class HomeFragment : Fragment() {
     private fun setData(){
         if(!brandsResponse.isNullOrEmpty()){
             adapter.addList(brandsResponse.toMutableList())
+            //TODO:MEJORAR CON RXJAVA2 CON FLATMAP
             for (brand in brandsResponse){
                 viewModel.getModels(brand.id)
             }

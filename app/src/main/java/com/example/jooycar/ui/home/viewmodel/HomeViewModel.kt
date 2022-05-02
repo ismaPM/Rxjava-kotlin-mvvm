@@ -12,8 +12,8 @@ import com.example.jooycar.utils.Resource
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
 class HomeViewModel(
     private val jooycarRepository: JooycarRepository
@@ -24,14 +24,14 @@ class HomeViewModel(
     private val _models = MutableLiveData<Resource<List<ModelsResponse>>>()
     val models: LiveData<Resource<List<ModelsResponse>>> get() = _models
 
-
     /**
      * Método para obtener marcas
      */
     fun getBrands() {
         _brands.postValue(Resource.loading(null))
         compositeDisposable.add(
-            jooycarRepository.getBrands()
+        jooycarRepository.getBrands()
+                //TODO:MEJORAR CON RXJAVA2 CON FLATMAP
                 //.flatMap { brandResponse -> Observable.fromIterable(brandResponse) }
                 //.flatMap { brand -> jooycarRepository.getModels(brand.id) }
                 .subscribeOn(Schedulers.io())
@@ -67,7 +67,7 @@ class HomeViewModel(
                 .subscribe({ response ->
                     //RESPUESTA CORRECTA
                     response.first().brandId = id
-                    _models.postValue(Resource.success(response))
+                    _models.value = (Resource.success(response))
                 }, { throwable ->
                     when (throwable) {
                         is NetworkException -> {
